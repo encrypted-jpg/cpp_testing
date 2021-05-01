@@ -1,0 +1,324 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        .center {
+          margin: auto;
+          width: 10%;
+          padding: 10px;
+        }
+        .file-upload {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            text-align:center;
+            width:200px;
+        }
+
+        .file-upload .file-select {
+            border: 2px solid #dce4ec;
+            color: #34495e;
+            cursor: pointer;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            background: #FFFFFF;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .file-upload .file-select .file-select-button {
+            background: #dce4ec;
+            padding: 0 10px;
+            text-align-all: center;
+            display: inline-block;
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .file-upload .file-select .file-select-name {
+            line-height: 40px;
+            text-align-all: center;
+            display: inline-block;
+            padding: 0 10px;
+        }
+
+        .file-upload .file-select:hover {
+            border-color: #34495e;
+            transition: all .2s ease-in-out;
+            -moz-transition: all .2s ease-in-out;
+            -webkit-transition: all .2s ease-in-out;
+            -o-transition: all .2s ease-in-out;
+        }
+
+        .file-upload .file-select:hover .file-select-button {
+            background: #34495e;
+            color: #FFFFFF;
+            transition: all .2s ease-in-out;
+            -moz-transition: all .2s ease-in-out;
+            -webkit-transition: all .2s ease-in-out;
+            -o-transition: all .2s ease-in-out;
+        }
+
+        .file-upload.active .file-select {
+            border-color: #3fa46a;
+            transition: all .2s ease-in-out;
+            -moz-transition: all .2s ease-in-out;
+            -webkit-transition: all .2s ease-in-out;
+            -o-transition: all .2s ease-in-out;
+        }
+
+        .file-upload.active .file-select .file-select-button {
+            background: #3fa46a;
+            color: #FFFFFF;
+            transition: all .2s ease-in-out;
+            -moz-transition: all .2s ease-in-out;
+            -webkit-transition: all .2s ease-in-out;
+            -o-transition: all .2s ease-in-out;
+        }
+
+        .file-upload .file-select input[type=file] {
+            z-index: 100;
+            cursor: pointer;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+
+        .file-upload .file-select.file-select-disabled {
+            opacity: 0.65;
+        }
+
+        .file-upload .file-select.file-select-disabled:hover {
+            cursor: default;
+            display: block;
+            border: 2px solid #dce4ec;
+            color: #34495e;
+            cursor: pointer;
+            height: 40px;
+            line-height: 40px;
+            margin-top: 5px;
+            background: #FFFFFF;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .file-upload .file-select.file-select-disabled:hover .file-select-button {
+            background: #dce4ec;
+            color: #666666;
+            padding: 0 10px;
+            display: inline-block;
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .file-upload .file-select.file-select-disabled:hover .file-select-name {
+            line-height: 40px;
+            display: inline-block;
+            padding: 0 10px;
+        }
+        .addcol {
+            font-size: 20px;
+        }
+    </style>
+    <title>CPP_TESTING</title>
+</head>
+<body>
+<div style="text-align: center">
+    <h1 style="text-align: center">Testing CPP Files with Different Test Cases</h1>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+      How to Use
+    </button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalLongTitle">HOW TO USE</h3>
+      </div>
+      <div class="modal-body">
+          <h4>
+          1. Upload a CPP FILE.
+          </h4>
+          <h4>
+          2. Enter the Test Cases Inputs and Expected Outputs in the corresponding Fields.
+          </h4>
+          <h4>
+          3. To Add another Test Case click on "Add Test Case" Button to get another column.
+          </h4>
+          <h4>
+          4. Finally, To Test the Code click on "Test the Code" Button
+          </h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+    window.onload= function f() {
+        var error = "{{ num_errors }}";
+        if (error !== '0') {
+            var bt = document.getElementById('error');
+            bt.click();
+        }
+    }
+</script>
+<div hidden>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong1" id="error">
+      How to Use
+    </button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalLong1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalLongTitle1">COMPILATION ERROR</h3>
+      </div>
+      <div class="modal-body">
+          {% for id, error in errors %}
+          <h5 id="error-body{{ id }}" style="font-size:15px; font-weight:bold;">
+          {{ error }}
+          </h5>
+          {% endfor %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form class="form-horizontal" method="POST" action="" id="test_form" enctype="multipart/form-data">
+    {% csrf_token %}
+<div style="text-align: center">
+        <h4>
+            <div class="file-upload center">
+                <div class="file-select">
+                    <div class="file-select-button" id="fileName">Choose File</div>
+                    <div class="file-select-name" id="noFile">No file chosen...</div>
+                    <input type="file" name="cpp_file" id="cpp_file" class="cpp_file">
+                </div>
+            </div>
+        </h4>
+        <h4>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="same_file" id="checkbox" class="checkbox"/>
+              <label class="form-check-label" for="checkbox">
+                Use the Previous File
+              </label>
+            </div>
+        </h4>
+    {% if file_url != "" %}
+        <h4>
+            <a href="{{ file_url }}" target="_blank">Selected File</a>
+        </h4>
+    {% endif %}
+</div>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-highlight">
+            <thead>
+            <th>Test Case</th>
+            <th>Output</th>
+            <th>Expected Output</th>
+            <th>Matching Status</th>
+            </thead>
+            <tbody id="table-body">
+            {% for id, tc, ot, et, mt in data %}
+                <tr id="{{ id }}" class="test_case">
+                    <td><textarea type="text" class="form-control tc{{ id }}" name="tc{{ id }}" rows="5">{{ tc }}</textarea>
+                    </td>
+                    <td><textarea type="text" class="form-control ot{{ id }}" name="ot{{ id }}" rows="5"
+                                  disabled>{{ ot }}</textarea></td>
+                    <td><textarea type="text" class="form-control et{{ id }}" name="et{{ id }}" rows="5">{{ et }}</textarea>
+                    </td>
+                    <td><textarea type="text" class="form-control mt{{ id }}" name="mt{{ id }}" rows="5"
+                                  disabled>{{ mt }}</textarea></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    <div style="text-align: center;padding-bottom:20px; font-size:15px;">
+        <button type="button" class="btn btn-success addcol" id="submit_form"> Test the Code</button>
+    </div>
+    </div>
+</form>
+<div style="text-align: center; color: #1d2fa7">
+    <button type="button" id="addColumn" class="btn btn-primary addcol">Add Test Case </button>
+</div>
+
+<script>
+    var num_cols = {{ num }};
+    var bt = document.getElementById("addColumn");
+    var sub = document.getElementById("submit_form");
+    sub.onclick = function () {
+        var form = document.getElementById("test_form");
+        var file = document.getElementById("cpp_file");
+        var checkbox = document.getElementById("checkbox");
+        if(!checkbox.checked && file.value === "") {
+            alert("Choose a File!!");
+            return 0;
+        }
+        if (checkbox.checked && file.value !== "") {
+            checkbox.value = "";
+        }
+        form.submit();
+    }
+    bt.onclick = function () {
+        var table = document.getElementById("table-body");
+        var tc = [];
+        var ot = [];
+        var et = [];
+        var mt = [];
+        var txt = ""
+        for(var i = 1; i < num_cols+1; i++) {
+            tc = document.getElementsByClassName("tc"+i.toString())[0].value;
+            ot = document.getElementsByClassName("ot"+i.toString())[0].value;
+            et = document.getElementsByClassName("et"+i.toString())[0].value;
+            mt = document.getElementsByClassName("mt"+i.toString())[0].value;
+            console.log(tc, ot, et, mt, num_cols);
+            txt += "<tr id='" + i.toString() + "' class='test_case'>";
+            txt += "<td>" + "<textarea type='text' class='form-control tc" + i.toString() + "' name='tc" + i.toString() + "' rows='5'>" + tc + "</textarea>" + "</td>";
+            txt += "<td>" + "<textarea type='text' class='form-control ot" + i.toString() + "' name='ot" + i.toString() + "' rows='5' disabled>" + ot + "</textarea>" + "</td>";
+            txt += "<td>" + "<textarea type='text' class='form-control et" + i.toString() + "' name='et" + i.toString() + "' rows='5'>" + et + "</textarea>" + "</td>";
+            txt += "<td>" + "<textarea type='text' class='form-control mt" + i.toString() + "' name='mt" + i.toString() + "' rows='5' disabled>" + mt + "</textarea>" + "</td>";
+            txt += "</tr>";
+        }
+        num_cols = num_cols + 1;
+        txt += "<tr id='" + num_cols.toString() + "' class='test_case'>";
+        txt += "<td>" + "<textarea type='text' class='form-control tc" + num_cols.toString() + "' name='tc" + num_cols.toString() + "' rows='5'>" + "</textarea>" + "</td>";
+        txt += "<td>" + "<textarea type='text' class='form-control ot" + num_cols.toString() + "' name='ot" + num_cols.toString() + "' rows='5' disabled>" + "</textarea>" + "</td>";
+        txt += "<td>" + "<textarea type='text' class='form-control et" + num_cols.toString() + "' name='et" + num_cols.toString() + "' rows='5'>" + "</textarea>" + "</td>";
+        txt += "<td>" + "<textarea type='text' class='form-control mt" + num_cols.toString() + "' name='mt" + num_cols.toString() + "' rows='5' disabled>" + "</textarea>" + "</td>";
+        txt += "</tr>";
+        table.innerHTML = txt;
+    };
+</script>
+<script>
+    $('#cpp_file').bind('change', function () {
+        var filename = $("#cpp_file").val();
+        if (/^\s*$/.test(filename)) {
+            $(".file-upload").removeClass('active');
+            $("#noFile").text("No file chosen...");
+        } else {
+            $(".file-upload").addClass('active');
+            $("#noFile").text(filename.replace("C:\\fakepath\\", ""));
+        }
+    });
+</script>
+</body>
+</html>
