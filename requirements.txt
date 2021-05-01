@@ -1,5 +1,4 @@
-boto3==1.17.62
-botocore==1.20.62
+bs4==0.0.1
 daphne==3.0.2
 Django==3.2
 django-extensions==3.1.3
@@ -8,3 +7,4 @@ django-storages==1.11.1
 gunicorn==20.1.0
 Pillow==8.2.0
 whitenoise==5.2.0
+requests==2.25.1

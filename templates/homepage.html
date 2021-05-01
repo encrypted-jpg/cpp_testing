@@ -174,6 +174,15 @@
             var bt = document.getElementById('error');
             bt.click();
         }
+        var msg = "{{ msg }}";
+        if (msg !== "") {
+            var dsp = document.getElementById("error-display");
+            dsp.innerText = "{{ msg }}";
+            var title = document.getElementById("exampleModalLongTitle1");
+            title.innerText = "URL ERROR";
+            var bt = document.getElementById("error");
+            bt.click();
+        }
     }
 </script>
 <div hidden>
@@ -189,7 +198,7 @@
       <div class="modal-header">
         <h3 class="modal-title" id="exampleModalLongTitle1">COMPILATION ERROR</h3>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" id="error-display">
           {% for id, error in errors %}
           <h5 id="error-body{{ id }}" style="font-size:15px; font-weight:bold;">
           {{ error }}
@@ -203,7 +212,7 @@
   </div>
 </div>
 
-<form class="form-horizontal" method="POST" action="" id="test_form" enctype="multipart/form-data">
+<form class="form-horizontal form-group" method="POST" action="" id="test_form" enctype="multipart/form-data">
     {% csrf_token %}
 <div style="text-align: center">
         <h4>
@@ -252,7 +261,12 @@
             {% endfor %}
             </tbody>
         </table>
-    <div style="text-align: center;padding-bottom:20px; font-size:15px;">
+        <div style="text-align: center;padding-bottom:20px; font-size:15px;">
+            <label for="code_url" class="d-flex justify-content-center" style="padding-bottom:20px; font-size:17px;">
+                Enter the URL of Code Forces Problem to get the Test Cases:
+                <input type="text" name="code_url" style="width:600px;" class="form-control" id="code_url" value="{{ code_site }}">
+            </label>
+            <br>
         <button type="button" class="btn btn-success addcol" id="submit_form"> Test the Code</button>
     </div>
     </div>

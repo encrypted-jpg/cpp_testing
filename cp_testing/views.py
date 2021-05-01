@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.urls import reverse
 import subprocess
 import os
+import requests
+from bs4 import BeautifulSoup
 
 
 def handle_uploaded_file(f, name):
@@ -51,6 +53,41 @@ def testing(data, name):
     return pdata, ""
 
 
+def get_data(site):
+    res = requests.get(site)
+    soup = BeautifulSoup(res.content, 'html.parser')
+    status = res.status_code
+    if int(status) != 200:
+        txt = "Status Code Received: " + str(status) + "\n"
+        txt += "Invalid URL... Please Enter a Valid URL"
+        return [], txt
+    try:
+        code = soup.select('div.sample-test')[0]
+        inputs = []
+        inp = code.select('div.input')
+        for x in inp:
+            txt = x.select('pre')[0].prettify()
+            txt = txt.replace("<pre>", "")
+            txt = txt.replace("</pre>", "")
+            txt = txt.replace("<br/>", " ")
+            inputs.append("\n".join(txt.split(" ")))
+        out = code.select('div.output')
+        outputs = []
+        for x in out:
+            txt = x.select('pre')[0].prettify()
+            txt = txt.replace("<pre>", "")
+            txt = txt.replace("</pre>", "")
+            txt = txt.replace("<br/>", " ")
+            outputs.append("\n".join(txt.split(" ")))
+        data = []
+        for x in range(len(inputs)):
+            data.append((x+1, inputs[x], "", outputs[x], ""))
+        return data, ""
+    except Exception as e:
+        txt = "Invalid URL... Please Enter a Valid URL"
+        return [], txt
+
+
 def index(request):
     data = [(1, "", "", "", "")]
     context = {
@@ -60,9 +97,14 @@ def index(request):
         "err": "",
         "errors": (),
         "num_errors": 0,
+        "code_site": "",
     }
     if request.method == 'POST':
         file = request.FILES.get('cpp_file')
+        if request.POST.get("code_url") is not None:
+            code_site = request.POST.get("code_url")
+        else:
+            code_site = ""
         dirs = os.listdir("data/")
         pdirs = []
         for x in dirs:
@@ -111,6 +153,8 @@ def index(request):
             if len(pdirs) != 0:
                 name = str(max(pdirs))+".cpp"
             else:
+                if len(data) == 0:
+                    data = [(1, "", "", "", "")]
                 context = {
                     "data": data,
                     "num": len(data),
@@ -118,8 +162,10 @@ def index(request):
                     "err": "",
                     "errors": (),
                     "num_errors": 0,
+                    "code_site": code_site,
                 }
                 return render(request, "homepage.html", context)
+        data, msg = get_data(code_site)
         data, err = testing(data, name)
         if len(data) == 0:
             data = [(1, "", "", "", "")]
@@ -130,6 +176,8 @@ def index(request):
             "err": "present",
             "errors": zip(range(len(err.splitlines())), err.splitlines()),
             "num_errors": len(err.splitlines()),
+            "code_site": code_site,
+            "msg" : msg,
         }
         return render(request, "homepage.html", context)
     return render(request, "homepage.html", context)
