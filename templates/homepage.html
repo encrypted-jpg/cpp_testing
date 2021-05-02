@@ -149,13 +149,25 @@
       </div>
       <div class="modal-body">
           <h4>
-          1. Upload a CPP FILE.
+          1a. Upload a CPP FILE.
+          </h4>
+          <h4>
+              1b. To use the Previous Uploaded File instead of submitting, you can just check the 'Use previous File' checkbox and test code.
           </h4>
           <h4>
           2. Enter the Test Cases Inputs and Expected Outputs in the corresponding Fields.
           </h4>
           <h4>
-          3. To Add another Test Case click on "Add Test Case" Button to get another column.
+          3a. To Add another Test Case click on "Add Test Case" Button to get another column.
+          </h4>
+          <h4>
+              3b. To Get Test Cases Directly from the Code Forces site enter the corresponding and valid URL of that problem.
+          </h4>
+          <h4>
+              3c. To Use Test Cases provided in the site only.. Make sure to reset table before testing the code, otherwise you will find the repetitions.
+          </h4>
+          <h4>
+              3d. To Test using test cases from the site and by your own.. Enter the Test Cases and the Valid URL
           </h4>
           <h4>
           4. Finally, To Test the Code click on "Test the Code" Button
@@ -245,9 +257,10 @@
             <th>Output</th>
             <th>Expected Output</th>
             <th>Matching Status</th>
+            <th>Execution Time (Approx.)</th>
             </thead>
             <tbody id="table-body">
-            {% for id, tc, ot, et, mt in data %}
+            {% for id, tc, ot, et, mt, time in data %}
                 <tr id="{{ id }}" class="test_case">
                     <td><textarea type="text" class="form-control tc{{ id }}" name="tc{{ id }}" rows="5">{{ tc }}</textarea>
                     </td>
@@ -257,6 +270,8 @@
                     </td>
                     <td><textarea type="text" class="form-control mt{{ id }}" name="mt{{ id }}" rows="5"
                                   disabled>{{ mt }}</textarea></td>
+                    <td><textarea type="text" class="form-control time{{ id }}" name="time{{ id }}" rows="5"
+                                  disabled>{{ time }}</textarea></td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -271,14 +286,30 @@
     </div>
     </div>
 </form>
-<div style="text-align: center; color: #1d2fa7">
-    <button type="button" id="addColumn" class="btn btn-primary addcol">Add Test Case </button>
+<div style="text-align: center; color: #1d2fa7; display: flex; justify-content: center">
+    <button type="button" id="addColumn" class="btn btn-primary addcol">Add Test Case</button>
+    <div style="padding-right: 10px; padding-left:10px"></div>
+    <button type="button" id="clearTable" class="btn btn-primary addcol">Reset Table</button>
 </div>
 
 <script>
     var num_cols = {{ num }};
     var bt = document.getElementById("addColumn");
     var sub = document.getElementById("submit_form");
+    var clear = document.getElementById("clearTable");
+    clear.onclick = function () {
+        var table = document.getElementById("table-body");
+        var txt = ""
+        num_cols = 1;
+        txt += "<tr id='" + num_cols.toString() + "' class='test_case'>";
+        txt += "<td>" + "<textarea type='text' class='form-control tc" + num_cols.toString() + "' name='tc" + num_cols.toString() + "' rows='5'>" + "</textarea>" + "</td>";
+        txt += "<td>" + "<textarea type='text' class='form-control ot" + num_cols.toString() + "' name='ot" + num_cols.toString() + "' rows='5' disabled>" + "</textarea>" + "</td>";
+        txt += "<td>" + "<textarea type='text' class='form-control et" + num_cols.toString() + "' name='et" + num_cols.toString() + "' rows='5'>" + "</textarea>" + "</td>";
+        txt += "<td>" + "<textarea type='text' class='form-control mt" + num_cols.toString() + "' name='mt" + num_cols.toString() + "' rows='5' disabled>" + "</textarea>" + "</td>";
+        txt += "<td>" + "<textarea type='text' class='form-control time" + num_cols.toString() + "' name='time" + num_cols.toString() + "' rows='5' disabled>" + "</textarea>" + "</td>";
+        txt += "</tr>";
+        table.innerHTML = txt;
+    }
     sub.onclick = function () {
         var form = document.getElementById("test_form");
         var file = document.getElementById("cpp_file");
@@ -293,23 +324,20 @@
         form.submit();
     }
     bt.onclick = function () {
-        var table = document.getElementById("table-body");
-        var tc = [];
-        var ot = [];
-        var et = [];
-        var mt = [];
-        var txt = ""
-        for(var i = 1; i < num_cols+1; i++) {
-            tc = document.getElementsByClassName("tc"+i.toString())[0].value;
-            ot = document.getElementsByClassName("ot"+i.toString())[0].value;
-            et = document.getElementsByClassName("et"+i.toString())[0].value;
-            mt = document.getElementsByClassName("mt"+i.toString())[0].value;
-            console.log(tc, ot, et, mt, num_cols);
+        let table = document.getElementById("table-body");
+        let txt = ""
+        for(let i = 1; i < num_cols+1; i++) {
+            let tc = document.getElementsByClassName("tc"+i.toString())[0].value;
+            let ot = document.getElementsByClassName("ot"+i.toString())[0].value;
+            let et = document.getElementsByClassName("et"+i.toString())[0].value;
+            let mt = document.getElementsByClassName("mt"+i.toString())[0].value;
+            let time = document.getElementsByClassName("time"+i.toString())[0].value;
             txt += "<tr id='" + i.toString() + "' class='test_case'>";
             txt += "<td>" + "<textarea type='text' class='form-control tc" + i.toString() + "' name='tc" + i.toString() + "' rows='5'>" + tc + "</textarea>" + "</td>";
             txt += "<td>" + "<textarea type='text' class='form-control ot" + i.toString() + "' name='ot" + i.toString() + "' rows='5' disabled>" + ot + "</textarea>" + "</td>";
             txt += "<td>" + "<textarea type='text' class='form-control et" + i.toString() + "' name='et" + i.toString() + "' rows='5'>" + et + "</textarea>" + "</td>";
             txt += "<td>" + "<textarea type='text' class='form-control mt" + i.toString() + "' name='mt" + i.toString() + "' rows='5' disabled>" + mt + "</textarea>" + "</td>";
+            txt += "<td>" + "<textarea type='text' class='form-control time" + i.toString() + "' name='time" + i.toString() + "' rows='5' disabled>" + time + "</textarea>" + "</td>";
             txt += "</tr>";
         }
         num_cols = num_cols + 1;
@@ -318,6 +346,7 @@
         txt += "<td>" + "<textarea type='text' class='form-control ot" + num_cols.toString() + "' name='ot" + num_cols.toString() + "' rows='5' disabled>" + "</textarea>" + "</td>";
         txt += "<td>" + "<textarea type='text' class='form-control et" + num_cols.toString() + "' name='et" + num_cols.toString() + "' rows='5'>" + "</textarea>" + "</td>";
         txt += "<td>" + "<textarea type='text' class='form-control mt" + num_cols.toString() + "' name='mt" + num_cols.toString() + "' rows='5' disabled>" + "</textarea>" + "</td>";
+        txt += "<td>" + "<textarea type='text' class='form-control time" + num_cols.toString() + "' name='time" + num_cols.toString() + "' rows='5' disabled>" + "</textarea>" + "</td>";
         txt += "</tr>";
         table.innerHTML = txt;
     };
